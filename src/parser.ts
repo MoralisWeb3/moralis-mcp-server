@@ -5,7 +5,7 @@ import type { Tool } from '@anthropic-ai/sdk/resources/messages/messages'
 export type NewToolMethod = {
   name: string
   description: string
-  inputSchema: IJsonSchema & { type: 'object' }
+  inputSchema: any
   returnSchema?: IJsonSchema
 }
 

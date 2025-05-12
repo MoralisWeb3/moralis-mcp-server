@@ -12,12 +12,14 @@ import { config } from 'dotenv';
 import { HttpClient, HttpClientError } from "./http-client.js";
 import { OpenAPIV3, OpenAPIV3_1 } from "openapi-types";
 import { NewToolMethod, OpenAPIToMCPConverter } from "./parser.js";
+import { parseParametersToObject } from "./utils.js";
 config()
 
 export class MoralisServer extends Server {
   private httpClient: HttpClient
   private tools: Map<string, NewToolMethod>
   private openApiLookup: Map<string, OpenAPIV3.OperationObject & { method: string, path: string }>
+
   constructor() {
     super(
       {
@@ -52,23 +54,24 @@ export class MoralisServer extends Server {
     for (const tool of openApiLookup.values()) {
       this.tools.set(tool.operationId as string, {
         description: tool.description || '',
-        inputSchema: (tool.parameters || { type: 'object' }) as any,
+        inputSchema: parseParametersToObject(tool.parameters as OpenAPIV3.ParameterObject[]),
         name: tool.operationId as string,
         returnSchema: { type: 'object' } 
       })
-    }   
+    }
     this.setUpTools()    
   }
 
   async start() {
     const transport = new StdioServerTransport();
     await this.connect(transport);
-
   }
+
   private findOperation(operationId: string): OpenAPIV3.OperationObject & { method: string, path: string } | null {
     const operation = this.openApiLookup.get(operationId) ?? null
     return operation
   }
+
   private setUpTools() {
     this.setRequestHandler(ListToolsRequestSchema, async () => {
       const tools: Tool[] = [];
