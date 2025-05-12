@@ -152,12 +152,12 @@ export class OpenAPIToMCPConverter {
 
   convertToMCPTools(): {
     tools: Record<string, { methods: NewToolMethod[] }>,
-    openApiLookup: Record<string, OpenAPIV3.OperationObject & { method: string, path: string }>,
+    openApiLookup: Map<string, OpenAPIV3.OperationObject & { method: string, path: string }>,
     zip: Record<string, { openApi: OpenAPIV3.OperationObject & { method: string, path: string }; mcp: NewToolMethod }>
   } {
     const apiName = 'API'
 
-    const openApiLookup: Record<string, OpenAPIV3.OperationObject & { method: string; path: string }> = {}
+    const openApiLookup: Map<string, OpenAPIV3.OperationObject & { method: string; path: string }> = new Map()
     const tools: Record<string, { methods: NewToolMethod[] }> = {
       [apiName]: { methods: [] }
     }
@@ -171,7 +171,7 @@ export class OpenAPIToMCPConverter {
         const mcpMethod = this.convertOperationToMCPMethod(operation, method, path)
         if (mcpMethod) {
           tools[apiName]!.methods.push(mcpMethod)
-          openApiLookup[apiName + '-' + mcpMethod.name] = { ...operation, method, path }
+          openApiLookup.set(mcpMethod.name, { ...operation, method, path })
           zip[apiName + '-' + mcpMethod.name] = { openApi: { ...operation, method, path }, mcp: mcpMethod }
         }
       }

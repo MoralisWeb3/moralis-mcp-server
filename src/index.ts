@@ -7,18 +7,17 @@ import {
   ListToolsRequestSchema,
   Tool,
 } from "@modelcontextprotocol/sdk/types.js";
-import { spec as openApiSpec } from './moralisJson.js'
-import { config } from 'dotenv'
+import openApiSpec from './moralis.json' with { type: "json" };
+import { config } from 'dotenv';
 import { HttpClient, HttpClientError } from "./http-client.js";
-import { OpenAPIV3 } from "openapi-types";
+import { OpenAPIV3, OpenAPIV3_1 } from "openapi-types";
 import { NewToolMethod, OpenAPIToMCPConverter } from "./parser.js";
-import { moralisApiTools } from "./moralisApiTools.js";
 config()
 
 export class MoralisServer extends Server {
   private httpClient: HttpClient
   private tools: Map<string, NewToolMethod>
-  private openApiLookup: Record<string, OpenAPIV3.OperationObject & { method: string, path: string }>
+  private openApiLookup: Map<string, OpenAPIV3.OperationObject & { method: string, path: string }>
   constructor() {
     super(
       {
@@ -41,16 +40,22 @@ export class MoralisServer extends Server {
       headers: {
         'x-api-key': process.env.MORALIS_API_KEY
       }
-    }, openApiSpec)
+    }, openApiSpec as OpenAPIV3_1.Document)
 
     // Convert OpenAPI spec to MCP tools
-    const converter = new OpenAPIToMCPConverter(openApiSpec)
+    const converter = new OpenAPIToMCPConverter(openApiSpec as OpenAPIV3_1.Document)
     const { openApiLookup } = converter.convertToMCPTools();
     this.tools = new Map();
 
-    this.openApiLookup = openApiLookup;   
-    for (const tool of moralisApiTools) {
-      this.tools.set(tool.name, { description: tool.description, inputSchema: (tool.input_schema || { type: 'object' }) as any, name: tool.name, returnSchema: { type: 'object' } })      
+    this.openApiLookup = openApiLookup;
+
+    for (const tool of openApiLookup.values()) {
+      this.tools.set(tool.operationId as string, {
+        description: tool.description || '',
+        inputSchema: (tool.parameters || { type: 'object' }) as any,
+        name: tool.operationId as string,
+        returnSchema: { type: 'object' } 
+      })
     }   
     this.setUpTools()    
   }
@@ -61,7 +66,7 @@ export class MoralisServer extends Server {
 
   }
   private findOperation(operationId: string): OpenAPIV3.OperationObject & { method: string, path: string } | null {
-    const operation = this.openApiLookup[operationId] ?? null
+    const operation = this.openApiLookup.get(operationId) ?? null
     return operation
   }
   private setUpTools() {
