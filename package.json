@@ -1,0 +1,54 @@
+{
+  "name": "@moralisweb3/api-mcp-server",
+  "version": "0.1.0",
+  "description": "Moralis MCP server",
+  "type": "module",
+  "bin": {
+    "moralis-api-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc && node -e \"require('fs').chmodSync('dist/index.js', '755')\"",
+    "prepare": "npm run build",
+    "watch": "tsc --watch",
+    "inspector": "npx @modelcontextprotocol/inspector dist/index.js",
+    "semantic-release": "semantic-release"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MoralisWeb3/moralis-mcp-server.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MoralisWeb3/moralis-mcp-server/issues"
+  },
+  "homepage": "https://github.com/MoralisWeb3/moralis-mcp-server#readme",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.11.1",
+    "axios": "^1.9.0",
+    "dotenv": "^16.5.0",
+    "ioredis": "^5.6.1",
+    "json-schema": "^0.4.0",
+    "memory-cache": "^0.2.0",
+    "openapi-client-axios": "^7.6.0",
+    "openapi-mcp-server": "^2.0.3",
+    "openapi-types": "^12.1.3"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.50.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.2",
+    "@semantic-release/npm": "^12.0.1",
+    "@types/json-schema": "^7.0.15",
+    "@types/memory-cache": "^0.2.6",
+    "@types/node": "^22.15.17",
+    "semantic-release": "^24.2.3",
+    "typescript": "^5.8.3"
+  }
+}
