@@ -11,6 +11,26 @@
   <br/>
 </div>
 
+## Usage
+
+To use with Cursor:
+
+Create a file in your Cursor config directory `~/.cursor/mcp.json`
+
+```json
+{
+  "mcpServers": {
+    "moralis": {
+      "command": "npx @moralisweb3/api-mcp-server",
+      "args": [],
+      "env": {
+        "MORALIS_API_KEY": "<MORALIS_API_KEY>"
+      }
+    }
+  }
+}
+```
+
 ## Development
 
 Install dependencies:
@@ -26,23 +46,6 @@ npm run build
 For development with auto-rebuild:
 ```bash
 npm run watch
-```
-
-## Installation
-
-To use with Claude Desktop, add the server config:
-
-On MacOS: `~/Library/Application Support/Claude/claude_desktop_config.json`
-On Windows: `%APPDATA%/Claude/claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "moralis-test": {
-      "command": "/path/to/moralis/build/index.js"
-    }
-  }
-}
 ```
 
 ### Debugging
