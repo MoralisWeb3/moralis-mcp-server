@@ -11,16 +11,20 @@ export function parseParametersToObject(parameters: OpenAPIV3.ParameterObject[])
   for (const param of parameters) {
     if (param.in === 'query' || param.in === 'path') {
       const name = param.name;
-      const schema = param.schema;
-      if (schema && !('$ref' in schema)) {
-        result.properties[name] = {
-          type: schema.type,
-          description: param.description,
-        };
-        if (schema.enum) {
-          result.properties[name].enum = schema.enum;
-        }
+      const schema = param.schema as OpenAPIV3.SchemaObject;
+
+      let items = (schema as any)?.items
+      if (items && '$ref' in items) {
+        items = { type: 'string' }
       }
+
+      result.properties[name] = {
+        type: schema?.type || 'string',
+        items: items,
+        enum: schema?.enum,
+        default: schema?.default,
+        description: param.description,
+      };
       if (param.required) {
         if (!result.required) {
           result.required = [];

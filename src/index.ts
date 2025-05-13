@@ -59,7 +59,7 @@ export class MoralisServer extends Server {
         returnSchema: { type: 'object' } 
       })
     }
-    this.setUpTools()    
+    this.setUpTools()
   }
 
   async start() {
