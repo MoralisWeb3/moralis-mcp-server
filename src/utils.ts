@@ -21,6 +21,12 @@ export function parseParametersToObject(parameters: OpenAPIV3.ParameterObject[])
           result.properties[name].enum = schema.enum;
         }
       }
+      if (param.required) {
+        if (!result.required) {
+          result.required = [];
+        }
+        result.required.push(name);
+      }
     }
   }
   return result;

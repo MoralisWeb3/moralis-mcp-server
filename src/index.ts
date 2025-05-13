@@ -93,7 +93,7 @@ export class MoralisServer extends Server {
       const { name, arguments: params } = request.params
 
       // Find the operation in OpenAPI spec
-      const operation = this.findOperation(`API-${name}`)
+      const operation = this.findOperation(name)
       // console.log('operations', this.openApiLookup)
       if (!operation) {
         throw new Error(`Method ${name} not found`)
