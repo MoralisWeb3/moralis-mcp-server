@@ -13,6 +13,7 @@ import { HttpClient, HttpClientError } from "./http-client.js";
 import { OpenAPIV3, OpenAPIV3_1 } from "openapi-types";
 import { NewToolMethod, OpenAPIToMCPConverter } from "./parser.js";
 import { parseParametersToObject } from "./utils.js";
+import { blacklistedOperationIds } from "./blacklist.js";
 config()
 
 export class MoralisServer extends Server {
@@ -52,6 +53,10 @@ export class MoralisServer extends Server {
     this.openApiLookup = openApiLookup;
 
     for (const tool of openApiLookup.values()) {
+      if (blacklistedOperationIds.has(tool.operationId as string)) {
+        continue;
+      }
+
       this.tools.set(tool.operationId as string, {
         description: tool.description || '',
         inputSchema: parseParametersToObject(tool.parameters as OpenAPIV3.ParameterObject[]),
