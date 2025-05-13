@@ -7,7 +7,7 @@ import {
   ListToolsRequestSchema,
   Tool,
 } from "@modelcontextprotocol/sdk/types.js";
-import openApiSpec from './moralis.json' with { type: "json" };
+import openApiSpec from './moralis.js';
 import { config } from 'dotenv';
 import { HttpClient, HttpClientError } from "./http-client.js";
 import { OpenAPIV3, OpenAPIV3_1 } from "openapi-types";

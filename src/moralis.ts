@@ -1,4 +1,4 @@
-{
+export default {
   "openapi": "3.0.0",
   "info": { "title": "EVM API", "version": "2.2" },
   "components": {
