@@ -11,25 +11,67 @@
   <br/>
 </div>
 
-## Usage
+## Usage with a Client
 
-To use with Cursor:
+To use this server with a client, you need to configure the client to communicate with the MCP server. Below is an example configuration for a generic client setup:
 
-Create a file in your Cursor config directory `~/.cursor/mcp.json`
+### Step 1: Create a Configuration File
+
+Create a configuration file in the appropriate directory for your client. For example, if your client uses a configuration directory, you might create a file named `mcp.json` in that directory.
+
+### Example Configuration
 
 ```json
 {
   "mcpServers": {
-    "moralis": {
+    "serverName": {
       "command": "npx @moralisweb3/api-mcp-server",
       "args": [],
       "env": {
-        "MORALIS_API_KEY": "<MORALIS_API_KEY>"
+        "MORALIS_API_KEY": "<YOUR_API_KEY>"
       }
     }
   }
 }
 ```
+
+### Notes
+
+This setup can be adapted for any client that supports MCP servers. Replace the example values with those specific to your use case.
+
+## Using as a server
+
+The server accepts an optional `--transport` argument to specify the transport type. The available transport types are:
+
+- `stdio`: Communicates over standard input/output (default).
+- `web`: Starts a WebSocket server for communication.
+- `streamable-http`: Starts an HTTP server with streamable endpoints.
+
+### Examples
+
+1. **Using the default `stdio` transport**:
+  ```bash
+  moralis-api-mcp --transport stdio
+  ```
+
+2. **Using the `web` transport**:
+  ```bash
+  moralis-api-mcp --transport web
+  ```
+
+  This will start a HTTP server. You can send requests to the server using tools like `curl` or Postman.
+
+3. **Using the `streamable-http` transport**:
+  ```bash
+  moralis-api-mcp --transport streamable-http
+  ```
+
+  This will start an HTTP server. You can send requests to the server using tools like `curl` or Postman.
+
+### Notes
+- Ensure that the required environment variables (e.g., `MORALIS_API_KEY`) are set before starting the server.
+- For custom configurations, you can pass additional arguments or environment variables as needed.
+- Refer to the documentation for more details on each transport type.
 
 ## Development
 
