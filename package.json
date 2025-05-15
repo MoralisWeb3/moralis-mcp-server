@@ -6,15 +6,15 @@
   "bin": {
     "moralis-api-mcp": "./dist/index.js"
   },
-  "files": [
-    "dist"
-  ],
+  "files": ["dist"],
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('dist/index.js', '755')\"",
     "prepare": "npm run build",
     "watch": "tsc --watch",
     "inspector": "npx @modelcontextprotocol/inspector dist/index.js",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "format": "npx @biomejs/biome format --write ./",
+    "lint": "npx @biomejs/biome lint --write ./"
   },
   "repository": {
     "type": "git",
@@ -45,6 +45,7 @@
   },
   "devDependencies": {
     "@anthropic-ai/sdk": "^0.50.3",
+    "@biomejs/biome": "^1.9.4",
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/github": "^11.0.2",
     "@semantic-release/npm": "^12.0.1",

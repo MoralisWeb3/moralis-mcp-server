@@ -4,7 +4,7 @@
 import { OpenAPIV3 } from 'openapi-types';
 import type { JSONSchema7, JSONSchema7TypeName } from 'json-schema';
 import { generateOperationId } from '../utils/operation-id.js';
-import { McpToolDefinition } from '../types/index.js';
+import type { McpToolDefinition } from '../types/index.js';
 
 /**
  * Extracts tool definitions from an OpenAPI document
@@ -12,7 +12,9 @@ import { McpToolDefinition } from '../types/index.js';
  * @param api OpenAPI document
  * @returns Array of MCP tool definitions
  */
-export function extractToolsFromApi(api: OpenAPIV3.Document): McpToolDefinition[] {
+export function extractToolsFromApi(
+  api: OpenAPIV3.Document,
+): McpToolDefinition[] {
   const tools: McpToolDefinition[] = [];
   const usedNames = new Set<string>();
   const globalSecurity = api.security || [];
@@ -45,18 +47,25 @@ export function extractToolsFromApi(api: OpenAPIV3.Document): McpToolDefinition[
 
       // Get or create a description
       const description =
-        operation.description || operation.summary || `Executes ${method.toUpperCase()} ${path}`;
+        operation.description ||
+        operation.summary ||
+        `Executes ${method.toUpperCase()} ${path}`;
 
       // Generate input schema and extract parameters
       const { inputSchema, parameters, requestBodyContentType } =
         generateInputSchemaAndDetails(operation);
 
       // Extract parameter details for execution
-      const executionParameters = parameters.map((p) => ({ name: p.name, in: p.in }));
+      const executionParameters = parameters.map((p) => ({
+        name: p.name,
+        in: p.in,
+      }));
 
       // Determine security requirements
       const securityRequirements =
-        operation.security === null ? globalSecurity : operation.security || globalSecurity;
+        operation.security === null
+          ? globalSecurity
+          : operation.security || globalSecurity;
 
       // Create the tool definition
       tools.push({
@@ -83,7 +92,9 @@ export function extractToolsFromApi(api: OpenAPIV3.Document): McpToolDefinition[
  * @param operation OpenAPI operation object
  * @returns Input schema, parameters, and request body content type
  */
-export function generateInputSchemaAndDetails(operation: OpenAPIV3.OperationObject): {
+export function generateInputSchemaAndDetails(
+  operation: OpenAPIV3.OperationObject,
+): {
   inputSchema: JSONSchema7 | boolean;
   parameters: OpenAPIV3.ParameterObject[];
   requestBodyContentType?: string;
@@ -92,14 +103,18 @@ export function generateInputSchemaAndDetails(operation: OpenAPIV3.OperationObje
   const required: string[] = [];
 
   // Process parameters
-  const allParameters: OpenAPIV3.ParameterObject[] = Array.isArray(operation.parameters)
+  const allParameters: OpenAPIV3.ParameterObject[] = Array.isArray(
+    operation.parameters,
+  )
     ? operation.parameters.map((p) => p as OpenAPIV3.ParameterObject)
     : [];
 
   allParameters.forEach((param) => {
     if (!param.name || !param.schema) return;
 
-    const paramSchema = mapOpenApiSchemaToJsonSchema(param.schema as OpenAPIV3.SchemaObject);
+    const paramSchema = mapOpenApiSchemaToJsonSchema(
+      param.schema as OpenAPIV3.SchemaObject,
+    );
     if (typeof paramSchema === 'object') {
       paramSchema.description = param.description || paramSchema.description;
     }
@@ -120,11 +135,15 @@ export function generateInputSchemaAndDetails(operation: OpenAPIV3.OperationObje
 
     if (jsonContent?.schema) {
       requestBodyContentType = 'application/json';
-      const bodySchema = mapOpenApiSchemaToJsonSchema(jsonContent.schema as OpenAPIV3.SchemaObject);
+      const bodySchema = mapOpenApiSchemaToJsonSchema(
+        jsonContent.schema as OpenAPIV3.SchemaObject,
+      );
 
       if (typeof bodySchema === 'object') {
         bodySchema.description =
-          opRequestBody.description || bodySchema.description || 'The JSON request body.';
+          opRequestBody.description ||
+          bodySchema.description ||
+          'The JSON request body.';
       }
 
       properties['requestBody'] = bodySchema;
@@ -135,7 +154,9 @@ export function generateInputSchemaAndDetails(operation: OpenAPIV3.OperationObje
 
       properties['requestBody'] = {
         type: 'string',
-        description: opRequestBody.description || `Request body (content type: ${contentType})`,
+        description:
+          opRequestBody.description ||
+          `Request body (content type: ${contentType})`,
       };
 
       if (opRequestBody.required) required.push('requestBody');
@@ -159,7 +180,7 @@ export function generateInputSchemaAndDetails(operation: OpenAPIV3.OperationObje
  * @returns JSON Schema representation
  */
 export function mapOpenApiSchemaToJsonSchema(
-  schema: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject
+  schema: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject,
 ): JSONSchema7 | boolean {
   // Handle reference objects
   if ('$ref' in schema) {
@@ -202,7 +223,9 @@ export function mapOpenApiSchemaToJsonSchema(
 
     for (const [key, propSchema] of Object.entries(jsonSchema.properties)) {
       if (typeof propSchema === 'object' && propSchema !== null) {
-        mappedProps[key] = mapOpenApiSchemaToJsonSchema(propSchema as OpenAPIV3.SchemaObject);
+        mappedProps[key] = mapOpenApiSchemaToJsonSchema(
+          propSchema as OpenAPIV3.SchemaObject,
+        );
       } else if (typeof propSchema === 'boolean') {
         mappedProps[key] = propSchema;
       }
@@ -218,7 +241,7 @@ export function mapOpenApiSchemaToJsonSchema(
     jsonSchema.items !== null
   ) {
     jsonSchema.items = mapOpenApiSchemaToJsonSchema(
-      jsonSchema.items as OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject
+      jsonSchema.items as OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject,
     );
   }
 

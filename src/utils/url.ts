@@ -1,7 +1,7 @@
 /**
  * URL handling utilities for OpenAPI to MCP generator
  */
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 
 /**
  * Determines the base URL from the OpenAPI document or CLI options
@@ -10,7 +10,10 @@ import { OpenAPIV3 } from 'openapi-types';
  * @param cmdLineBaseUrl Optional base URL from command line options
  * @returns The determined base URL or null if none is available
  */
-export function determineBaseUrl(api: OpenAPIV3.Document, cmdLineBaseUrl?: string): string | null {
+export function determineBaseUrl(
+  api: OpenAPIV3.Document,
+  cmdLineBaseUrl?: string,
+): string | null {
   // Command line option takes precedence
   if (cmdLineBaseUrl) {
     return normalizeUrl(cmdLineBaseUrl);
@@ -24,7 +27,7 @@ export function determineBaseUrl(api: OpenAPIV3.Document, cmdLineBaseUrl?: strin
   // Multiple servers - use first one with warning
   if (api.servers && api.servers.length > 1) {
     console.warn(
-      `Multiple servers found. Using first: "${api.servers[0].url}". Use --base-url to override.`
+      `Multiple servers found. Using first: "${api.servers[0].url}". Use --base-url to override.`,
     );
     return normalizeUrl(api.servers[0].url);
   }
@@ -67,13 +70,16 @@ export function joinUrl(baseUrl: string, path: string): string {
  * @param queryParams Query parameters
  * @returns URL with query parameters
  */
-export function buildUrlWithQuery(baseUrl: string, queryParams: Record<string, any>): string {
+export function buildUrlWithQuery(
+  baseUrl: string,
+  queryParams: Record<string, any>,
+): string {
   if (!Object.keys(queryParams).length) return baseUrl;
 
   const url = new URL(
     baseUrl.startsWith('http')
       ? baseUrl
-      : `http://localhost${baseUrl.startsWith('/') ? '' : '/'}${baseUrl}`
+      : `http://localhost${baseUrl.startsWith('/') ? '' : '/'}${baseUrl}`,
   );
 
   for (const [key, value] of Object.entries(queryParams)) {
@@ -85,7 +91,9 @@ export function buildUrlWithQuery(baseUrl: string, queryParams: Record<string, a
   }
 
   // Remove http://localhost if we added it
-  return baseUrl.startsWith('http') ? url.toString() : url.pathname + url.search;
+  return baseUrl.startsWith('http')
+    ? url.toString()
+    : url.pathname + url.search;
 }
 
 /**
@@ -97,7 +105,7 @@ export function buildUrlWithQuery(baseUrl: string, queryParams: Record<string, a
 export function extractPathParams(urlTemplate: string): string[] {
   const paramRegex = /{([^}]+)}/g;
   const params: string[] = [];
-  let match;
+  let match: any;
 
   while ((match = paramRegex.exec(urlTemplate)) !== null) {
     params.push(match[1]);

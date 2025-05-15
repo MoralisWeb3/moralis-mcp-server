@@ -3,7 +3,7 @@
 /**
  * Core type definitions for the openapi-to-mcp generator
  */
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import type { JSONSchema7 } from 'json-schema';
 
 /**

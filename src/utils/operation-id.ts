@@ -31,7 +31,7 @@ export function generateOperationId(method: string, path: string): string {
     if (part.startsWith('{') && part.endsWith('}')) {
       // Append 'By' + ParamName only for the *last* path parameter segment
       if (index === parts.length - 1) {
-        name += 'By' + titleCase(part);
+        name += `By${titleCase(part)}`;
       }
       // Potentially include non-terminal params differently if needed, e.g.:
       // else { name += 'With' + titleCase(part); }

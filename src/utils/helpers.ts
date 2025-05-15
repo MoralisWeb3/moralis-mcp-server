@@ -9,7 +9,7 @@
  * @param defaultValue Default value to return if stringify fails
  * @returns JSON string or default value
  */
-export function safeJsonStringify(obj: any, defaultValue: string = '{}'): string {
+export function safeJsonStringify(obj: any, defaultValue = '{}'): string {
   try {
     return JSON.stringify(obj);
   } catch (e) {
@@ -37,7 +37,7 @@ export function sanitizeForTemplate(str: string): string {
 export function toCamelCase(str: string): string {
   return str
     .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
-      index === 0 ? word.toLowerCase() : word.toUpperCase()
+      index === 0 ? word.toLowerCase() : word.toUpperCase(),
     )
     .replace(/\s+/g, '')
     .replace(/[^a-zA-Z0-9]/g, '');
@@ -67,7 +67,7 @@ export function toValidVariableName(str: string): string {
   const sanitized = str.replace(/[^a-zA-Z0-9_$]/g, '_');
 
   // Ensure the variable name doesn't start with a number
-  return sanitized.match(/^[0-9]/) ? '_' + sanitized : sanitized;
+  return sanitized.match(/^[0-9]/) ? `_${sanitized}` : sanitized;
 }
 
 /**
@@ -88,7 +88,7 @@ export function isValidIdentifier(str: string): boolean {
  * @param maxLineLength Maximum line length
  * @returns Formatted comment string
  */
-export function formatComment(str: string, maxLineLength: number = 80): string {
+export function formatComment(str: string, maxLineLength = 80): string {
   if (!str) return '';
 
   const words = str.trim().split(/\s+/);
@@ -96,7 +96,7 @@ export function formatComment(str: string, maxLineLength: number = 80): string {
   let currentLine = '';
 
   words.forEach((word) => {
-    if ((currentLine + ' ' + word).length <= maxLineLength) {
+    if (`${currentLine} ${word}`.length <= maxLineLength) {
       currentLine += (currentLine ? ' ' : '') + word;
     } else {
       lines.push(currentLine);

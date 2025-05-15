@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { Config } from './config.js';
-import { server } from "./server.js";
-import { setupWebServer } from "./web-server.js";
-import { setupStreamableHttpServer } from "./streamable-http.js";
+import { server } from './server.js';
+import { setupWebServer } from './web-server.js';
+import { setupStreamableHttpServer } from './streamable-http.js';
 
-const enum TransportType {
+enum TransportType {
   STDIO = 'stdio',
   WEB = 'web',
   STREAMABLE_HTTP = 'streamable-http',
@@ -17,9 +17,11 @@ async function startStdioServer() {
   try {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error(`${Config.SERVER_NAME} MCP Server (v${Config.SERVER_VERSION}) running on stdio${Config.API_BASE_URL ? `, proxying API at ${Config.API_BASE_URL}` : ''}`);
+    console.error(
+      `${Config.SERVER_NAME} MCP Server (v${Config.SERVER_VERSION}) running on stdio${Config.API_BASE_URL ? `, proxying API at ${Config.API_BASE_URL}` : ''}`,
+    );
   } catch (error) {
-    console.error("Error during server startup:", error);
+    console.error('Error during server startup:', error);
     process.exit(1);
   }
 }
@@ -29,7 +31,7 @@ async function startWebServer() {
   try {
     await setupWebServer(server, 3000);
   } catch (error) {
-    console.error("Error setting up web server:", error);
+    console.error('Error setting up web server:', error);
     process.exit(1);
   }
 }
@@ -39,7 +41,7 @@ async function startStreamableHttpServer() {
   try {
     await setupStreamableHttpServer(server, 3000);
   } catch (error) {
-    console.error("Error setting up StreamableHTTP server:", error);
+    console.error('Error setting up StreamableHTTP server:', error);
     process.exit(1);
   }
 }
@@ -65,8 +67,8 @@ async function main(transport: string) {
  * Cleanup function for graceful shutdown
  */
 async function cleanup() {
-    console.error("Shutting down MCP server...");
-    process.exit(0);
+  console.error('Shutting down MCP server...');
+  process.exit(0);
 }
 
 // Register signal handlers
@@ -81,13 +83,15 @@ if (args.length > 0) {
   if (transportType === '--transport' && args[1]) {
     transport = args[1];
   } else {
-    console.error("Invalid argument. Use --transport followed by the transport type (stdio, web, streamable-http).");
+    console.error(
+      'Invalid argument. Use --transport followed by the transport type (stdio, web, streamable-http).',
+    );
     process.exit(1);
   }
 }
 
 // Start the server
 main(transport).catch((error) => {
-  console.error("Fatal error in main execution:", error);
+  console.error('Fatal error in main execution:', error);
   process.exit(1);
 });
