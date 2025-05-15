@@ -14,9 +14,9 @@ import { jsonSchemaToZod } from 'json-schema-to-zod';
 import axios, { type AxiosRequestConfig, type AxiosError } from 'axios';
 import { OpenAPIV3 } from 'openapi-types';
 import { extractToolsFromApi } from './parser/index.js';
-import { blacklistedOperationIds } from './blacklist.js';
 import { Config } from './config.js';
 import { getSpec } from './utils/get-spec.js';
+import { OpenAPIV3DocumentX } from "./types/open-api-document-x.js";
 
 /**
  * Type definition for JSON objects
@@ -37,7 +37,7 @@ interface McpToolDefinition {
     securityRequirements: any[];
 }
 
-const spec = (await getSpec(Config.API_SPEC_URL)) as OpenAPIV3.Document;
+const spec = (await getSpec(Config.API_SPEC_URL)) as any;
 
 Config.SERVER_NAME = spec.info.title;
 Config.SERVER_VERSION = spec.info.version;
@@ -50,15 +50,16 @@ export const server = new Server(
     { capabilities: { tools: {} } }
 );
 
-const api = (await SwaggerParser.dereference(spec)) as OpenAPIV3.Document;
-const tools = extractToolsFromApi(api as OpenAPIV3.Document);
+const api = (await SwaggerParser.dereference(spec)) as OpenAPIV3DocumentX;
+const tools = extractToolsFromApi(api);
+const blacklist = Array.isArray(api["x-mcp-blacklist"]) ? api["x-mcp-blacklist"].map((e) => e.toLowerCase()) : [];
 
 /**
  * Map of tool definitions by name
  */
 const toolDefinitionMap: Map<string, McpToolDefinition> = new Map();
 for (const tool of tools) {
-    if (blacklistedOperationIds.has(tool.name)) {
+    if (blacklist.includes(tool.name)) {
         continue;
     }
 
