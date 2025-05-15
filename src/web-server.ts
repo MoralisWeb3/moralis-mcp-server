@@ -12,7 +12,7 @@ import { JSONRPCMessage, JSONRPCMessageSchema } from "@modelcontextprotocol/sdk/
 import type { Context } from 'hono';
 import type { SSEStreamingApi } from 'hono/streaming';
 import type { Transport } from "@modelcontextprotocol/sdk/shared/transport.js";
-import { SERVER_NAME, SERVER_VERSION } from './const.js';
+import { Config } from './config.js';
 
 /**
 * Custom SSE Transport implementation using Hono's streaming API
@@ -70,8 +70,8 @@ async start(): Promise<void> {
       type: "welcome",
       clientInfo: {
         sessionId: this._sessionId,
-        serverName: SERVER_NAME,
-        serverVersion: SERVER_VERSION
+        serverName: Config.SERVER_NAME,
+        serverVersion: Config.SERVER_VERSION
       }
     }
   });
@@ -154,7 +154,7 @@ const transports: {[sessionId: string]: SSETransport} = {};
 
 // Add a simple health check endpoint
 app.get('/health', (c) => {
-  return c.json({ status: 'OK', server: SERVER_NAME, version: SERVER_VERSION });
+  return c.json({ status: 'OK', server: Config.SERVER_NAME, version: Config.SERVER_VERSION });
 });
 
 // SSE endpoint for clients to connect to

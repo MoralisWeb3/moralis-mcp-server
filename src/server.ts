@@ -1,16 +1,6 @@
 #!/usr/bin/env node
 
-// Load environment variables from .env file
-import dotenv from 'dotenv';
-dotenv.config();
-
-import path from 'path';
-import { fileURLToPath } from 'url';
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
   ListToolsRequestSchema,
@@ -25,7 +15,8 @@ import axios, { type AxiosRequestConfig, type AxiosError } from 'axios';
 import { OpenAPIV3 } from 'openapi-types';
 import { extractToolsFromApi } from './parser/index.js';
 import { blacklistedOperationIds } from './blacklist.js';
-import { SERVER_NAME, SERVER_VERSION, API_BASE_URL } from './const.js';
+import { Config } from './config.js';
+import { getSpec } from './utils/get-spec.js';
 
 /**
  * Type definition for JSON objects
@@ -46,17 +37,20 @@ interface McpToolDefinition {
     securityRequirements: any[];
 }
 
+const spec = (await getSpec(Config.API_SPEC_URL)) as OpenAPIV3.Document;
 
+Config.SERVER_NAME = spec.info.title;
+Config.SERVER_VERSION = spec.info.version;
 
 /**
  * MCP Server instance
  */
 export const server = new Server(
-    { name: SERVER_NAME, version: SERVER_VERSION },
+    { name: Config.SERVER_NAME, version: Config.SERVER_VERSION },
     { capabilities: { tools: {} } }
 );
 
-const api = (await SwaggerParser.dereference(`${__dirname}/swagger.json`)) as OpenAPIV3.Document;
+const api = (await SwaggerParser.dereference(spec)) as OpenAPIV3.Document;
 const tools = extractToolsFromApi(api as OpenAPIV3.Document);
 
 /**
@@ -163,7 +157,7 @@ async function executeApiTool(
     }
     
     // Construct the full URL
-    const requestUrl = API_BASE_URL ? `${API_BASE_URL}${urlPath}` : urlPath;
+    const requestUrl = Config.API_BASE_URL ? `${Config.API_BASE_URL}${urlPath}` : urlPath;
 
     // Handle request body if needed
     if (definition.requestBodyContentType && typeof validatedArgs['requestBody'] !== 'undefined') {
@@ -182,7 +176,7 @@ async function executeApiTool(
             
             // API Key security (header, query, cookie)
             if (scheme.type === 'apiKey') {
-                return !!process.env[`MORALIS_API_KEY`];
+                return !!Config.MORALIS_API_KEY;
             }
             
             return false;
@@ -197,7 +191,7 @@ async function executeApiTool(
             
             // API Key security
             if (scheme?.type === 'apiKey') {
-                const apiKey = process.env[`MORALIS_API_KEY`];
+                const apiKey = Config.MORALIS_API_KEY;
                 if (apiKey) {
                     if (scheme.in === 'header') {
                         headers[scheme.name.toLowerCase()] = apiKey;

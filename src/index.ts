@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
-import { SERVER_NAME, SERVER_VERSION, API_BASE_URL } from './const.js';
+import { Config } from './config.js';
 import { server } from "./server.js";
 import { setupWebServer } from "./web-server.js";
 import { setupStreamableHttpServer } from "./streamable-http.js";
@@ -17,7 +17,7 @@ async function startStdioServer() {
   try {
     const transport = new StdioServerTransport();
     await server.connect(transport);
-    console.error(`${SERVER_NAME} MCP Server (v${SERVER_VERSION}) running on stdio${API_BASE_URL ? `, proxying API at ${API_BASE_URL}` : ''}`);
+    console.error(`${Config.SERVER_NAME} MCP Server (v${Config.SERVER_VERSION}) running on stdio${Config.API_BASE_URL ? `, proxying API at ${Config.API_BASE_URL}` : ''}`);
   } catch (error) {
     console.error("Error during server startup:", error);
     process.exit(1);

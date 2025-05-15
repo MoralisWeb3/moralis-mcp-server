@@ -44,7 +44,7 @@ This setup can be adapted for any client that supports MCP servers. Replace the 
 The server accepts an optional `--transport` argument to specify the transport type. The available transport types are:
 
 - `stdio`: Communicates over standard input/output (default).
-- `web`: Starts a WebSocket server for communication.
+- `web`: Starts a HTTP server for communication.
 - `streamable-http`: Starts an HTTP server with streamable endpoints.
 
 ### Examples

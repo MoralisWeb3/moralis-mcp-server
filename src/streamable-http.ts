@@ -10,7 +10,7 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { InitializeRequestSchema, JSONRPCError } from "@modelcontextprotocol/sdk/types.js";
 import { toReqRes, toFetchResponse } from 'fetch-to-node';
-import { SERVER_NAME, SERVER_VERSION } from './const.js';
+import { Config } from './config.js';
 
 // Constants
 const SESSION_ID_HEADER_NAME = "mcp-session-id";
@@ -172,7 +172,7 @@ export async function setupStreamableHttpServer(server: Server, port = 3000) {
   
   // Add a simple health check endpoint
   app.get('/health', (c) => {
-    return c.json({ status: 'OK', server: SERVER_NAME, version: SERVER_VERSION });
+    return c.json({ status: 'OK', server: Config.SERVER_NAME, version: Config.SERVER_VERSION });
   });
   
   // Main MCP endpoint supporting both GET and POST
