@@ -10,6 +10,7 @@
   </p>
   <br/>
 </div>
+[![smithery badge](https://smithery.ai/badge/@MoralisWeb3/moralis-mcp-server)](https://smithery.ai/server/@MoralisWeb3/moralis-mcp-server)
 
 ## Usage with a Client
 
@@ -99,3 +100,11 @@ npm run inspector
 ```
 
 The Inspector will provide a URL to access debugging tools in your browser.
+
+### Installing via Smithery
+
+To install Moralis API Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@MoralisWeb3/moralis-mcp-server):
+
+```bash
+npx -y @smithery/cli install @MoralisWeb3/moralis-mcp-server --client claude
+```
