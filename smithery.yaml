@@ -1,0 +1,19 @@
+# Smithery configuration file: https://smithery.ai/docs/build/project-config
+
+startCommand:
+  type: stdio
+  configSchema:
+    # JSON Schema defining the configuration options for the MCP.
+    type: object
+    required:
+      - moralisApiKey
+    properties:
+      moralisApiKey:
+        type: string
+        description: Moralis API key for authenticating with Moralis API
+  commandFunction:
+    # A JS function that produces the CLI command based on the given config to start the MCP on stdio.
+    |-
+    (config) => ({ command: "node", args: ["./dist/index.js", "--transport", "stdio"], env: { MORALIS_API_KEY: config.moralisApiKey } })
+  exampleConfig:
+    moralisApiKey: YOUR_MORALIS_API_KEY_HERE
