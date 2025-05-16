@@ -11,17 +11,41 @@
   <br/>
 </div>
 
-![smithery badge](https://smithery.ai/badge/@MoralisWeb3/moralis-mcp-server)
+## 🧠 Overview
+The **Moralis MCP Server** is a local or cloud-deployable engine that connects natural language prompts to real blockchain insights — allowing AI models to query wallet activity, token metrics, dapp usage, and more without custom code or SQL.
 
-## Usage with a Client
+Built on top of the [Model Context Protocol](https://github.com/modelcontextprotocol/spec), this server makes it easy for LLMs to talk to Moralis APIs in a consistent, explainable, and extensible way.
 
-To use this server with a client, you need to configure the client to communicate with the MCP server. Below is an example configuration for a generic client setup:
+- 🔗 Fully pluggable: swap LLMs, customize retrieval logic, or extend with your own tools
+- 🧱 Works with OpenAI, Claude, and open-source models
+- 🧠 Powers agents, devtools, bots, dashboards, and beyond
 
-### Step 1: Create a Configuration File
+## ⚙️ Common Use Cases
 
-Create a configuration file in the appropriate directory for your client. For example, if your client uses a configuration directory, you might create a file named `mcp.json` in that directory.
+- 🤖 AI agents & assistants: “What’s this wallet’s trading history?”
+- 📈 Devtools: on-chain QA, testing, CLI integrations
+- 📊 Dashboards: natural language to charts/data
+- 📉 Monitoring: alerting & summarization for tokens/dapps
+- 🧠 Trading bots: LLM-driven strategies with real blockchain grounding
 
-### Example Configuration
+## 🔐 Getting an API Key
+
+To use this MCP server with Moralis APIs, you'll need an API key:
+
+1. Visit [https://moralis.io](https://admin.moralis.com)
+2. Sign up and log in
+3. Navigate to your [API Keys page](https://admin.moralis.com/api-keys) from the main menu
+4. Copy your key and configure it in your config file (see next section), or set it in your environment:
+```bash
+export MORALIS_API_KEY=<your_api_key>
+```
+> ⚠️ Note: Some features and endpoints require a Moralis paid plan. For full access and production-grade performance, we recommend signing up for a paid tier.
+
+## 🚀 Usage with a Client
+
+To connect the MCP server to a compatible client (e.g. Claude Desktop, OpenAI-compatible agents, VS Code extensions, etc.), configure the client to launch the server as a subprocess.
+
+Most clients support a simple config file - for example, you might create a file like mcp.json in the client’s configuration directory with the following:
 
 ```json
 {
@@ -37,11 +61,9 @@ Create a configuration file in the appropriate directory for your client. For ex
 }
 ```
 
-### Notes
-
 This setup can be adapted for any client that supports MCP servers. Replace the example values with those specific to your use case.
 
-## Using as a server
+## 🖥️ Using as a Server
 
 The server accepts an optional `--transport` argument to specify the transport type. The available transport types are:
 
@@ -75,7 +97,7 @@ The server accepts an optional `--transport` argument to specify the transport t
 - For custom configurations, you can pass additional arguments or environment variables as needed.
 - Refer to the documentation for more details on each transport type.
 
-## Development
+## 🛠 Development
 
 Install dependencies:
 ```bash
@@ -92,7 +114,7 @@ For development with auto-rebuild:
 npm run watch
 ```
 
-### Debugging
+### 🐞 Debugging
 
 Since MCP servers communicate over stdio, debugging can be challenging. We recommend using the [MCP Inspector](https://github.com/modelcontextprotocol/inspector), which is available as a package script:
 
@@ -109,3 +131,51 @@ To install Moralis API Server for Claude Desktop automatically via [Smithery](ht
 ```bash
 npx -y @smithery/cli install @MoralisWeb3/moralis-mcp-server --client claude
 ```
+
+
+## 💬 Example Prompts
+
+Here are some example prompts you can use with your AI agent through the MCP server:
+
+```
+- What’s the current price of PEPE and Ethereum?
+
+- What is the current trading sentiment for TOSHI on Base — bullish or bearish?
+
+- Show me the NFTs owned by `vitalik.eth` on Base.
+
+- What tokens does wallet `0xab71...4321` hold?
+
+- When was wallet 0xabc...123 first and last seen active on Ethereum, Base, and Polygon?
+
+- Show me the complete transaction history for 0xabc...123 across Ethereum, Base, and BNB Chain.
+
+- What is the current net worth in USD of wallet 0xabc...123?
+
+- Find wallet addresses that are likely associated with Coinbase.
+
+- Analyze the current holder distribution of SPX6900 — include whales, small holders, and recent growth trends.
+
+- Show me PEPE’s daily OHLC data for the past 30 days and provide a summary of the trend — is it bullish or bearish?
+```
+
+These prompts are parsed and mapped to structured Moralis API calls using the MCP method registry.
+
+> 💡 You can also build custom prompts based on any supported method.
+
+
+## 📚 API Reference
+
+The Moralis MCP Server wraps and translates prompts into Moralis REST API calls. You can explore the underlying API surface here:
+
+🔗 **[Moralis Swagger Docs (v2.2)](https://deep-index.moralis.io/api-docs-2.2/)**
+
+This documentation covers endpoints for:
+
+- Token pricing
+- Wallet activity
+- NFT metadata and ownership
+- Transfers and transactions
+- And more
+
+
