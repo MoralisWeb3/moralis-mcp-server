@@ -10,6 +10,7 @@
   </p>
   <br/>
 </div>
+
 ![smithery badge](https://smithery.ai/badge/@MoralisWeb3/moralis-mcp-server)
 
 ## Usage with a Client
