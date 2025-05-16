@@ -11,6 +11,8 @@
   <br/>
 </div>
 
+![smithery badge](https://smithery.ai/badge/@MoralisWeb3/moralis-mcp-server)
+
 ## 🧠 Overview
 The **Moralis MCP Server** is a local or cloud-deployable engine that connects natural language prompts to real blockchain insights — allowing AI models to query wallet activity, token metrics, dapp usage, and more without custom code or SQL.
 
@@ -62,6 +64,15 @@ Most clients support a simple config file - for example, you might create a file
 ```
 
 This setup can be adapted for any client that supports MCP servers. Replace the example values with those specific to your use case.
+
+### Installing via Smithery
+
+To install Moralis API Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@MoralisWeb3/moralis-mcp-server):
+
+```bash
+npx -y @smithery/cli install @MoralisWeb3/moralis-mcp-server --client claude
+```
+
 
 ## 🖥️ Using as a Server
 
@@ -123,14 +134,6 @@ npm run inspector
 ```
 
 The Inspector will provide a URL to access debugging tools in your browser.
-
-### Installing via Smithery
-
-To install Moralis API Server for Claude Desktop automatically via [Smithery](https://smithery.ai/server/@MoralisWeb3/moralis-mcp-server):
-
-```bash
-npx -y @smithery/cli install @MoralisWeb3/moralis-mcp-server --client claude
-```
 
 
 ## 💬 Example Prompts
