@@ -1,12 +1,14 @@
 {
   "name": "@moralisweb3/api-mcp-server",
-  "version": "1.3.2",
+  "version": "1.4.0",
   "description": "Moralis MCP server",
   "type": "module",
   "bin": {
     "moralis-api-mcp": "./dist/index.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc && node -e \"require('fs').chmodSync('dist/index.js', '755')\"",
     "prepare": "npm run build",
