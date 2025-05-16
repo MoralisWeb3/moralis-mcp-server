@@ -7,15 +7,11 @@ import { serve } from '@hono/node-server';
 import { v4 as uuid } from 'uuid';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import type { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import {
-  InitializeRequestSchema,
-  type JSONRPCError,
-} from '@modelcontextprotocol/sdk/types.js';
+import type { JSONRPCError } from '@modelcontextprotocol/sdk/types.js';
 import { toReqRes, toFetchResponse } from 'fetch-to-node';
 import { Config } from './config.js';
 
 // Constants
-const SESSION_ID_HEADER_NAME = 'mcp-session-id';
 const JSON_RPC = '2.0';
 
 /**
@@ -23,8 +19,6 @@ const JSON_RPC = '2.0';
  */
 class MCPStreamableHttpServer {
   server: Server;
-  // Store active transports by session ID
-  transports: { [sessionId: string]: StreamableHTTPServerTransport } = {};
 
   constructor(server: Server) {
     this.server = server;
@@ -46,81 +40,27 @@ class MCPStreamableHttpServer {
    * Handle POST requests (all MCP communication)
    */
   async handlePostRequest(c: any) {
-    const sessionId = c.req.header(SESSION_ID_HEADER_NAME);
-    console.error(
-      `POST request received ${sessionId ? `with session ID: ${sessionId}` : 'without session ID'}`,
-    );
-
     try {
+      const transport: StreamableHTTPServerTransport =
+        new StreamableHTTPServerTransport({
+          sessionIdGenerator: undefined,
+        });
+      await this.server.connect(transport);
+
       const body = await c.req.json();
 
       // Convert Fetch Request to Node.js req/res
       const { req, res } = toReqRes(c.req.raw);
 
-      // Reuse existing transport if we have a session ID
-      if (sessionId && this.transports[sessionId]) {
-        const transport = this.transports[sessionId];
+      await transport.handleRequest(req, res, body);
+      res.on('close', () => {
+        console.log('Request closed');
+        transport.close();
+        this.server.close();
+      });
 
-        // Handle the request with the transport
-        await transport.handleRequest(req, res, body);
-
-        // Cleanup when the response ends
-        res.on('close', () => {
-          console.error(`Request closed for session ${sessionId}`);
-        });
-
-        // Convert Node.js response back to Fetch Response
-        return toFetchResponse(res);
-      }
-
-      // Create new transport for initialize requests
-      if (!sessionId && this.isInitializeRequest(body)) {
-        console.error(
-          'Creating new StreamableHTTP transport for initialize request',
-        );
-
-        const transport = new StreamableHTTPServerTransport({
-          sessionIdGenerator: () => uuid(),
-        });
-
-        // Add error handler for debug purposes
-        transport.onerror = (err) => {
-          console.error('StreamableHTTP transport error:', err);
-        };
-
-        // Connect the transport to the MCP server
-        await this.server.connect(transport);
-
-        // Handle the request with the transport
-        await transport.handleRequest(req, res, body);
-
-        // Store the transport if we have a session ID
-        const newSessionId = transport.sessionId;
-        if (newSessionId) {
-          console.error(`New session established: ${newSessionId}`);
-          this.transports[newSessionId] = transport;
-
-          // Set up clean-up for when the transport is closed
-          transport.onclose = () => {
-            console.error(`Session closed: ${newSessionId}`);
-            delete this.transports[newSessionId];
-          };
-        }
-
-        // Cleanup when the response ends
-        res.on('close', () => {
-          console.error('Request closed for new session');
-        });
-
-        // Convert Node.js response back to Fetch Response
-        return toFetchResponse(res);
-      }
-
-      // Invalid request (no session ID and not initialize)
-      return c.json(
-        this.createErrorResponse('Bad Request: invalid session ID or method.'),
-        400,
-      );
+      // Convert Node.js response back to Fetch Response
+      return toFetchResponse(res);
     } catch (error) {
       console.error('Error handling MCP request:', error);
       return c.json(this.createErrorResponse('Internal server error.'), 500);
@@ -139,22 +79,6 @@ class MCPStreamableHttpServer {
       },
       id: uuid(),
     };
-  }
-
-  /**
-   * Check if the request is an initialize request
-   */
-  private isInitializeRequest(body: any): boolean {
-    const isInitial = (data: any) => {
-      const result = InitializeRequestSchema.safeParse(data);
-      return result.success;
-    };
-
-    if (Array.isArray(body)) {
-      return body.some((request) => isInitial(request));
-    }
-
-    return isInitial(body);
   }
 }
 
