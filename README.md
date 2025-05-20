@@ -34,7 +34,7 @@ Built on top of the [Model Context Protocol](https://github.com/modelcontextprot
 
 To use this MCP server with Moralis APIs, you'll need an API key:
 
-1. Go to [Moralis](https://admin.moralis.com) admin dashboard
+1. Go to [Moralis](https://admin.moralis.com) developer portal
 2. Sign up and log in
 3. Navigate to your [API Keys page](https://admin.moralis.com/api-keys) from the main menu
 4. Copy your key and configure it in your config file (see next section), or set it in your environment:
