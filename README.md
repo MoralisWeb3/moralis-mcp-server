@@ -1,6 +1,6 @@
 <div align="center">
   <p>
-    <a align="center" href="https://moralis.io" target="_blank">
+    <a align="center" href="https://developers.moralis.com/" target="_blank">
       <img src="https://raw.githubusercontent.com/MoralisWeb3/moralis-analytics-js/main/assets/moralis-logo.svg" alt="Moralis Analytics" height=200/>
     </a>
     <h1 align="center">Moralis MCP Server</h1>
@@ -34,7 +34,7 @@ Built on top of the [Model Context Protocol](https://github.com/modelcontextprot
 
 To use this MCP server with Moralis APIs, you'll need an API key:
 
-1. Visit [https://moralis.io](https://admin.moralis.com)
+1. Go to [Moralis](https://admin.moralis.com) admin dashboard
 2. Sign up and log in
 3. Navigate to your [API Keys page](https://admin.moralis.com/api-keys) from the main menu
 4. Copy your key and configure it in your config file (see next section), or set it in your environment:
