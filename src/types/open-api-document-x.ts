@@ -1,5 +1,9 @@
 import type { OpenAPIV3 } from 'openapi-types';
 
-export interface OpenAPIV3DocumentX extends OpenAPIV3.Document {
+interface DocumentX {
+  'x-mcp-prompt'?: string;
+}
+
+export interface OpenAPIV3DocumentX extends OpenAPIV3.Document<DocumentX> {
   'x-mcp-blacklist': string[];
 }

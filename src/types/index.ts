@@ -36,6 +36,8 @@ export interface McpToolDefinition {
   securityRequirements: OpenAPIV3.SecurityRequirementObject[];
   /** Original operation ID from the OpenAPI spec */
   operationId: string;
+  /** Optional prompt for the tool */
+  prompt?: string;
 }
 
 /**

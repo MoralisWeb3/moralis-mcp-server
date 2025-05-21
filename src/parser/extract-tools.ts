@@ -5,6 +5,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import type { JSONSchema7, JSONSchema7TypeName } from 'json-schema';
 import { generateOperationId } from '../utils/operation-id.js';
 import type { McpToolDefinition } from '../types/index.js';
+import type { OpenAPIV3DocumentX } from '../types/open-api-document-x.js';
 
 /**
  * Extracts tool definitions from an OpenAPI document
@@ -13,7 +14,7 @@ import type { McpToolDefinition } from '../types/index.js';
  * @returns Array of MCP tool definitions
  */
 export function extractToolsFromApi(
-  api: OpenAPIV3.Document,
+  api: OpenAPIV3DocumentX,
 ): McpToolDefinition[] {
   const tools: McpToolDefinition[] = [];
   const usedNames = new Set<string>();
@@ -51,6 +52,8 @@ export function extractToolsFromApi(
         operation.summary ||
         `Executes ${method.toUpperCase()} ${path}`;
 
+      const prompt = operation['x-mcp-prompt'];
+
       // Generate input schema and extract parameters
       const { inputSchema, parameters, requestBodyContentType } =
         generateInputSchemaAndDetails(operation);
@@ -79,6 +82,7 @@ export function extractToolsFromApi(
         requestBodyContentType,
         securityRequirements,
         operationId: baseName,
+        prompt,
       });
     }
   }
