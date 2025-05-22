@@ -70,7 +70,7 @@ export async function executeApiTool(
     const queryParams: Record<string, any> = {};
     const headers: Record<string, string> = {
       Accept: 'application/json',
-      'X-Service-Origin': 'mcp',
+      'X-Moralis-Platform': 'MCP',
     };
     let requestBodyData: any = undefined;
 
