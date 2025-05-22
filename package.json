@@ -1,6 +1,6 @@
 {
   "name": "@moralisweb3/api-mcp-server",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Moralis MCP server",
   "type": "module",
   "bin": {
