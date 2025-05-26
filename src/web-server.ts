@@ -16,6 +16,10 @@ import type { SSEStreamingApi } from 'hono/streaming';
 import type { Transport } from '@modelcontextprotocol/sdk/shared/transport.js';
 import { Config } from './config.js';
 
+interface AuthInfo {
+  token?: string;
+}
+
 /**
  * Custom SSE Transport implementation using Hono's streaming API
  */
@@ -26,7 +30,7 @@ class SSETransport implements Transport {
 
   onclose?: () => void;
   onerror?: (error: Error) => void;
-  onmessage?: (message: JSONRPCMessage) => void;
+  onmessage?: (message: JSONRPCMessage, extra?: { authInfo?: AuthInfo }) => void;
 
   constructor(messageUrl: string, stream: SSEStreamingApi) {
     this._sessionId = uuid();
@@ -94,7 +98,7 @@ class SSETransport implements Transport {
 
         // Forward to the message handler
         if (this.onmessage) {
-          this.onmessage(parsedMessage);
+          this.onmessage(parsedMessage, { authInfo: { token: c.req.header('X-API-Key') } });
           return c.text('Accepted', 202);
         } else {
           return c.text('No message handler defined', 500);

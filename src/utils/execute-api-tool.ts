@@ -35,6 +35,7 @@ export async function executeApiTool(
   definition: McpToolDefinition,
   toolArgs: JsonObject,
   allSecuritySchemes: Record<string, any>,
+  token?: string,
 ): Promise<CallToolResult> {
   try {
     // Validate arguments against the input schema
@@ -120,7 +121,7 @@ export async function executeApiTool(
 
         // API Key security (header, query, cookie)
         if (scheme.type === 'apiKey') {
-          return !!Config.MORALIS_API_KEY;
+          return !!token || !!Config.MORALIS_API_KEY;
         }
 
         return false;
@@ -135,7 +136,7 @@ export async function executeApiTool(
 
         // API Key security
         if (scheme?.type === 'apiKey') {
-          const apiKey = Config.MORALIS_API_KEY;
+          const apiKey = token || Config.MORALIS_API_KEY;
           if (apiKey) {
             if (scheme.in === 'header') {
               headers[scheme.name.toLowerCase()] = apiKey;

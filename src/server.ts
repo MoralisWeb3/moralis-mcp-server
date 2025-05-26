@@ -76,7 +76,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 
 server.setRequestHandler(
   CallToolRequestSchema,
-  async (request: CallToolRequest): Promise<CallToolResult> => {
+  async (request: CallToolRequest, c): Promise<CallToolResult> => {
     const { name: toolName, arguments: toolArgs } = request.params;
     const toolDefinition = toolDefinitionMap.get(toolName);
     if (!toolDefinition) {
@@ -92,6 +92,7 @@ server.setRequestHandler(
       toolDefinition,
       toolArgs ?? {},
       securitySchemes,
+      c.authInfo?.token,
     );
   },
 );
@@ -113,7 +114,7 @@ server.setRequestHandler(ListPromptsRequestSchema, async () => {
 
 server.setRequestHandler(
   GetPromptRequestSchema,
-  async (request: GetPromptRequest): Promise<GetPromptResult> => {
+  async (request: GetPromptRequest, c): Promise<GetPromptResult> => {
     const { name: toolName, arguments: toolArgs } = request.params;
     const toolDefinition = toolDefinitionMap.get(toolName);
     if (!toolDefinition) {
@@ -135,6 +136,7 @@ server.setRequestHandler(
       toolDefinition,
       toolArgs ?? {},
       securitySchemes,
+      c.authInfo?.token,
     );
 
     return {
