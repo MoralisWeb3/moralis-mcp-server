@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/moralisweb3-moralis-mcp-server-badge.png)](https://mseep.ai/app/moralisweb3-moralis-mcp-server)
+
 <div align="center">
   <p>
     <a align="center" href="https://developers.moralis.com/" target="_blank">
