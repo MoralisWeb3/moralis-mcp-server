@@ -2,7 +2,7 @@
 
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { Config } from './config.js';
-import { server } from './server.js';
+import { serverSetup } from './server.js';
 import { setupWebServer } from './web-server.js';
 import { setupStreamableHttpServer } from './streamable-http.js';
 
@@ -16,9 +16,9 @@ async function startStdioServer() {
   // Set up stdio transport
   try {
     const transport = new StdioServerTransport();
-    await server.connect(transport);
+    (await serverSetup()).connect(transport);
     console.error(
-      `${Config.SERVER_NAME} MCP Server (v${Config.SERVER_VERSION}) running on stdio${Config.API_BASE_URL ? `, proxying API at ${Config.API_BASE_URL}` : ''}`,
+      `${Config.SERVER_NAME} Server (v${Config.SERVER_VERSION}) running on stdio`,
     );
   } catch (error) {
     console.error('Error during server startup:', error);
@@ -29,7 +29,7 @@ async function startStdioServer() {
 async function startWebServer() {
   // Set up Web Server transport
   try {
-    await setupWebServer(server, 3000);
+    await setupWebServer(await serverSetup(), 3000);
   } catch (error) {
     console.error('Error setting up web server:', error);
     process.exit(1);
@@ -39,7 +39,7 @@ async function startWebServer() {
 async function startStreamableHttpServer() {
   // Set up StreamableHTTP transport
   try {
-    await setupStreamableHttpServer(server, 3000);
+    await setupStreamableHttpServer(await serverSetup(), 3000);
   } catch (error) {
     console.error('Error setting up StreamableHTTP server:', error);
     process.exit(1);

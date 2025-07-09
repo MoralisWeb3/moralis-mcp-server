@@ -11,10 +11,12 @@ import type { OpenAPIV3DocumentX } from '../types/open-api-document-x.js';
  * Extracts tool definitions from an OpenAPI document
  *
  * @param api OpenAPI document
+ * @param prefix Tool prefix
  * @returns Array of MCP tool definitions
  */
 export function extractToolsFromApi(
   api: OpenAPIV3DocumentX,
+  prefix?: string,
 ): McpToolDefinition[] {
   const tools: McpToolDefinition[] = [];
   const usedNames = new Set<string>();
@@ -72,7 +74,7 @@ export function extractToolsFromApi(
 
       // Create the tool definition
       tools.push({
-        name: finalToolName,
+        name: prefix + finalToolName,
         description,
         inputSchema,
         method,
@@ -199,14 +201,19 @@ export function mapOpenApiSchemaToJsonSchema(
   let jsonSchema: JSONSchema7 = { ...schema } as any;
 
   if (schema.oneOf || schema.anyOf || schema.allOf) {
-    const oneSchema = structuredClone(schema.oneOf || schema.anyOf || schema.allOf);
+    const oneSchema = structuredClone(
+      schema.oneOf || schema.anyOf || schema.allOf,
+    );
 
     if (oneSchema) {
       const combinedSchema = mapOpenApiSchemaToJsonSchema(oneSchema[0]);
-      
+
       for (let i = 1; i < oneSchema.length; i++) {
         const mappedSubSchema = mapOpenApiSchemaToJsonSchema(oneSchema[i]);
-        if (typeof mappedSubSchema === 'object' && typeof combinedSchema === 'object') {
+        if (
+          typeof mappedSubSchema === 'object' &&
+          typeof combinedSchema === 'object'
+        ) {
           // Handle enum values
           if (mappedSubSchema.enum) {
             if (!combinedSchema.enum) {
@@ -215,7 +222,7 @@ export function mapOpenApiSchemaToJsonSchema(
             // Combine enum values from both schemas
             const uniqueEnums = new Set([
               ...combinedSchema.enum,
-              ...(mappedSubSchema.enum || [])
+              ...(mappedSubSchema.enum || []),
             ]);
             combinedSchema.enum = Array.from(uniqueEnums);
           }
