@@ -49,7 +49,8 @@ export async function serverSetup(
     Config.SOL_CONFIG,
   ],
 ) {
-  const configArray = Array.isArray(config) ? config : [config];
+  let configArray = Array.isArray(config) ? config : [config];
+  if (Config.SERVER_CONFIG) configArray = [Config.SERVER_CONFIG];
 
   /**
    * MCP Server instance
