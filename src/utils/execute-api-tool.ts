@@ -19,6 +19,7 @@ export interface McpToolDefinition {
   securityRequirements: any[];
   prompt?: string;
   parameters: any[];
+  baseUrl: string;
 }
 
 /**
@@ -98,9 +99,7 @@ export async function executeApiTool(
     }
 
     // Construct the full URL
-    const requestUrl = Config.API_BASE_URL
-      ? `${Config.API_BASE_URL}${urlPath}`
-      : urlPath;
+    const requestUrl = `${definition.baseUrl}${urlPath}`;
 
     // Handle request body if needed
     if (
