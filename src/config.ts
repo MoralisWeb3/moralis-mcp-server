@@ -13,7 +13,7 @@ export type SchemaConfig = {
 
 const configs: Record<string, SchemaConfig> = {
   evm:  {
-    prefix: 'evm',
+    prefix: 'evm_',
     baseUrl:
       process.env.API_BASE_URL || 'https://deep-index.moralis.io/api/v2.2',
     specUrl:
@@ -21,7 +21,7 @@ const configs: Record<string, SchemaConfig> = {
       'https://deep-index.moralis.io/api-docs-2.2/v2.2/swagger.json',
   },
   solana: {
-    prefix: 'solana',
+    prefix: 'solana_',
     baseUrl: process.env.SOLANA_BASE_URL || 'https://solana-gateway.moralis.io',
     specUrl:
       process.env.SOLANA_SPEC_URL ||
