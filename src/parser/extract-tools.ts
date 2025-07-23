@@ -11,12 +11,10 @@ import type { OpenAPIV3DocumentX } from '../types/open-api-document-x.js';
  * Extracts tool definitions from an OpenAPI document
  *
  * @param api OpenAPI document
- * @param prefix Tool prefix
  * @returns Array of MCP tool definitions
  */
 export function extractToolsFromApi(
   api: OpenAPIV3DocumentX,
-  prefix?: string,
 ): McpToolDefinition[] {
   const tools: McpToolDefinition[] = [];
   const usedNames = new Set<string>();
@@ -74,7 +72,7 @@ export function extractToolsFromApi(
 
       // Create the tool definition
       tools.push({
-        name: prefix + finalToolName,
+        name: finalToolName,
         description,
         inputSchema,
         method,
