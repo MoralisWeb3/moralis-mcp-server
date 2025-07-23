@@ -27,7 +27,7 @@ async function mapToolDefinitions(config: SchemaConfig) {
   const spec = (await getSpec(config.specUrl)) as OpenAPIV3DocumentX;
   const api = (await SwaggerParser.dereference(spec)) as OpenAPIV3DocumentX;
 
-  const tools = extractToolsFromApi(api, config.prefix);
+  const tools = extractToolsFromApi(api);
   const blacklist = Array.isArray(api['x-mcp-blacklist'])
     ? api['x-mcp-blacklist'].map((e) => e.toLowerCase())
     : [];
@@ -35,7 +35,7 @@ async function mapToolDefinitions(config: SchemaConfig) {
   const toolDefinitionMap: Record<string, McpToolDefinition> = {};
   for (const tool of tools) {
     if (blacklist.includes(tool.name)) continue;
-    toolDefinitionMap[tool.name] = {
+    toolDefinitionMap[`${config.prefix}_${tool.name}`] = {
       ...tool,
       baseUrl: config.baseUrl,
     };
